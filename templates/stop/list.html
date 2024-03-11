@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Stops{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">Stops</h1>
+
+<div class="row">
+
+  {% for stop in stops %}
+
+  <div class="col-6 col-md-4 col-lg-3">
+    <div class="card mb-3">
+      <img class="card-img-top image-fluid" style="height: 10em" src="{{ stop.image_url }}" alt="{{ stop.name }}">
+      <div class="card-body">
+        <h5 class="card-title">
+          <a href="/stops/{{ stop.id }}">
+            {{ stop.name }}
+          </a>
+        </h5>
+        <p class="card-text">
+          {{ stop.description }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+
+</div>
+
+<div class="mt-3">
+  <a href="/stops/add" class="btn btn-outline-primary">Add a Stop</a>
+</div>
+
+{% endblock %}
