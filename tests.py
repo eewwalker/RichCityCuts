@@ -2,6 +2,7 @@
 
 
 import os
+import re
 
 os.environ["DATABASE_URL"] = "postgresql:///rich_city_test"
 os.environ["FLASK_DEBUG"] = "0"
@@ -60,14 +61,14 @@ STOP_DATA = dict(
     image_url="http://teststopimg.com/"
 )
 
-# CAFE_DATA_EDIT = dict(
-#     name="new-name",
-#     description="new-description",
-#     url="http://new-image.com/",
-#     address="500 Sansome St",
-#     city_code="sf",
-#     image_url="http://new-image.com/"
-# )
+STOP_DATA_EDIT = dict(
+    name="new-name",
+    description="new-description",
+    url="http://new-image.com/",
+    address="500 Humboldt St",
+    hood_code="point",
+    image_url="http://new-image.com/"
+)
 
 # TEST_USER_DATA = dict(
 #     username="test",
@@ -117,7 +118,7 @@ class HomepageViewsTestCase(TestCase):
     def test_homepage(self):
         with app.test_client() as client:
             resp = client.get("/")
-            self.assertIn(b'Where Coffee Dreams Come True', resp.data)
+            self.assertIn(b'RICHCITYSTOPS', resp.data)
 
 
 #######################################
@@ -225,78 +226,78 @@ class StopViewsTestCase(TestCase):
             self.assertIn(b'teststop.com', resp.data)
 
 
-# class CafeAdminViewsTestCase(TestCase):
-#     """Tests for add/edit views on cafes."""
+class StopAdminViewsTestCase(TestCase):
+    """Tests for add/edit views on stops."""
 
-#     def setUp(self):
-#         """Before each test, add sample city, users, and cafes"""
+    def setUp(self):
+        """Before each test, add sample hood, users, and stops"""
 
-#         City.query.delete()
-#         Cafe.query.delete()
+        Neighborhood.query.delete()
+        Stop.query.delete()
 
-#         sf = City(**CITY_DATA)
-#         db.session.add(sf)
+        point = Neighborhood(**NEIGHBORHOOD_DATA)
+        db.session.add(point)
 
-#         cafe = Cafe(**CAFE_DATA)
-#         db.session.add(cafe)
+        stop = Stop(**STOP_DATA)
+        db.session.add(stop)
 
-#         db.session.commit()
+        db.session.commit()
 
-#         self.cafe_id = cafe.id
+        self.stop_id = stop.id
 
-#     def tearDown(self):
-#         """After each test, delete the cities."""
+    def tearDown(self):
+        """After each test, delete the cities."""
 
-#         Cafe.query.delete()
-#         City.query.delete()
-#         db.session.commit()
+        Stop.query.delete()
+        Neighborhood.query.delete()
+        db.session.commit()
 
-#     def test_add(self):
-#         with app.test_client() as client:
-#             resp = client.get(f"/cafes/add")
-#             self.assertIn(b'Add Cafe', resp.data)
+    def test_add(self):
+        with app.test_client() as client:
+            resp = client.get(f"/stops/add")
+            self.assertIn(b'Add Stop', resp.data)
 
-#             resp = client.post(
-#                 f"/cafes/add",
-#                 data=CAFE_DATA_EDIT,
-#                 follow_redirects=True)
-#             self.assertIn(b'added', resp.data)
+            resp = client.post(
+                f"/stops/add",
+                data=STOP_DATA_EDIT,
+                follow_redirects=True)
+            self.assertIn(b'added', resp.data)
 
-#    def test_dynamic_cities_vocab(self):
-#        id = self.cafe_id
+    def test_dynamic_cities_vocab(self):
+        id = self.stop_id
 
-#        # the following is a regular expression for the HTML for the drop-down
-#        # menu pattern we want to check for
-#        choices_pattern = re.compile(
-#            r'<select [^>]*name="city_code"[^>]*><option [^>]*value="sf">' +
-#            r'San Francisco</option></select>')
+        # the following is a regular expression for the HTML for the drop-down
+        # menu pattern we want to check for
+        choices_pattern = re.compile(
+            r'<select [^>]*name="hood_code"[^>]*><option [^>]*value="point">' +
+            r'Point Richmond</option></select>')
 
-#        with app.test_client() as client:
-#            resp = client.get(f"/cafes/add")
-#            self.assertRegex(resp.data.decode('utf8'), choices_pattern)
+        with app.test_client() as client:
+            resp = client.get(f"/stops/add")
+            self.assertRegex(resp.data.decode('utf8'), choices_pattern)
 
-#            resp = client.get(f"/cafes/{id}/edit")
-#            self.assertRegex(resp.data.decode('utf8'), choices_pattern)
+            resp = client.get(f"/stops/{id}/edit")
+            self.assertRegex(resp.data.decode('utf8'), choices_pattern)
 
-#     def test_edit(self):
-#         id = self.cafe_id
+    def test_edit(self):
+        id = self.stop_id
 
-#         with app.test_client() as client:
-#             resp = client.get(f"/cafes/{id}/edit", follow_redirects=True)
-#             self.assertIn(b'Edit Test Cafe', resp.data)
+        with app.test_client() as client:
+            resp = client.get(f"/stops/{id}/edit", follow_redirects=True)
+            self.assertIn(b'Edit StopName', resp.data)
 
-#             resp = client.post(
-#                 f"/cafes/{id}/edit",
-#                 data=CAFE_DATA_EDIT,
-#                 follow_redirects=True)
-#             self.assertIn(b'edited', resp.data)
+            resp = client.post(
+                f"/stops/{id}/edit",
+                data=STOP_DATA_EDIT,
+                follow_redirects=True)
+            self.assertIn(b'edited', resp.data)
 
-#    def test_edit_form_shows_curr_data(self):
-#        id = self.cafe_id
+    def test_edit_form_shows_curr_data(self):
+        id = self.stop_id
 
-#        with app.test_client() as client:
-#            resp = client.get(f"/cafes/{id}/edit", follow_redirects=True)
-#            self.assertIn(b'Test description', resp.data)
+        with app.test_client() as client:
+            resp = client.get(f"/stops/{id}/edit", follow_redirects=True)
+            self.assertIn(b'Test description', resp.data)
 
 
 #######################################

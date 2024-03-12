@@ -5,7 +5,15 @@
 {% block content %}
 
 <h1 class="mb-4">Edit StopName </h1>
+{% include '_form.html' %}
+<form method="POST">
+  <button class="btn btn-outline-primary" formaction="{{url_for('stops_list')}}" formmethod="GET">
+    Cancel
+  </button>
 
-<!-- form goes here -->>
+  <button class="btn btn-outline-primary" type="submit">
+    Edit
+  </button>
+</form>
 
 {% endblock %}

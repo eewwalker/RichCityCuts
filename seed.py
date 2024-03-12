@@ -1,7 +1,7 @@
 """Initial data."""
 
 
-# from app import db
+from app import db
 from models import Neighborhood, Stop, db  # , User
 
 
@@ -10,13 +10,17 @@ db.create_all()
 
 
 #######################################
-# add cities
+# add neighborhoods
 
 point = Neighborhood(code='point', name='Point Richmond')
 marina = Neighborhood(code='marina', name='Marina Bay')
 hills = Neighborhood(code='hills', name='Richmond Hills')
+pablo = Neighborhood(code='pablo', name='Point San Pablo')
+northeast = Neighborhood(code='northeast', name='North and East')
+north = Neighborhood(code='north', name='North Richmond')
+annex = Neighborhood(code='annex', name='Richmond Annex')
 
-db.session.add_all([point, marina, hills])
+db.session.add_all([point, marina, hills, pablo, northeast, north, annex])
 db.session.commit()
 
 
