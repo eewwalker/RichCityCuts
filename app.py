@@ -56,6 +56,7 @@ def add_csrf_form_to_g():
 
 @app.errorhandler(404)
 def page_not_found(e):
+    """ Custom 404 page to render """
     return render_template('404.html'), 404
 
 
@@ -119,7 +120,8 @@ def stop_detail(stop_id):
 
 @app.route('/stops/add', methods=['GET', 'POST'])
 def add_stop():
-    """ Show form if GET. If valid, add new stop and redirect"""
+    """ Show form if GET. If valid, add new stop and redirect
+        Can only be done by admin"""
 
     if not g.user:
         flash('Please log in or Sign up!', 'danger')
@@ -156,7 +158,8 @@ def add_stop():
 
 @app.route('/stops/<int:stop_id>/edit', methods=['POST', 'GET'])
 def edit_stop(stop_id):
-    """ Show form if GET. If valid, edit form and redirect"""
+    """ Show form if GET. If valid, edit form and redirect
+        Can only be done by admin """
 
     if not g.user:
         flash('Please log in or Sign up!', 'danger')
@@ -185,6 +188,24 @@ def edit_stop(stop_id):
         return render_template('stop/edit-form.html', form=form)
 
     return redirect(url_for('homepage'))
+
+
+@app.post('/stops/<int:stop_id>/delete')
+def delete_stop(stop_id):
+    """ Delete stop if admin"""
+
+    if not g.user and not g.user.admin:
+        flash('Please log in or Sign up!', 'danger')
+        return redirect(url_for('homepage'))
+
+    stop = Stop.query.get_or_404(stop_id)
+
+    g.user.liked_stops.remove(stop)
+    db.session.delete(stop)
+    db.session.commit()
+
+    return redirect(url_for('stops_list'))
+
 
 #######################################
 # user
