@@ -5,11 +5,12 @@
 {% block content %}
 
 <h1 class="mb-4">Add Stop</h1>
-{% include '_form.html' %}
+
 <form method="POST">
-  <button class="btn btn-outline-primary" formaction="{{url_for('stops_list')}}" formmethod="GET">
+  {% include '_form.html' %}
+  <a class="btn btn-outline-primary" href="{{url_for('stops_list')}}">
     Cancel
-  </button>
+  </a>
 
   <button class="btn btn-outline-primary" type="submit">
     Add

@@ -1,31 +1,59 @@
-
 {% extends 'base.html' %}
 
-{% block title %} FULL NAME {% endblock %}
+{% block title %} {{user.get_full_name()}} {% endblock %}
 
 {% block content %}
 
 <div class="row justify-content-center">
 
   <div class="col-4 col-sm-4 col-md-4 col-lg-3">
-    <img class="img-fluid mb-5" src="FIXME">
+    <img class="img-fluid rounded mb-5 " src="{{user.image_url or DEFAULT_IMG_URL}}">
   </div>
 
   <div class="col-12 col-sm-10 col-md-8">
-    <h1>FULL NAME</h1>
-    <p class="lead"> DESCRIPTION </p>
+    <h1>{{user.get_full_name()}}</h1>
+    <p class="lead"> {{user.description}} </p>
 
-    <p><b>Username:</b> USERNAME </p>
-    <p><b>Email:</b> EMAIL </p>
+    <p><b>Username:</b> {{user.username}} </p>
+    <p><b>Email:</b> {{user.email}} </p>
 
     <p>
-      <a class="btn btn-outline-primary" href="FIXME">
+      <a class="btn btn-outline-primary" href="/users/{{user.id}}/edit">
         Edit Your Profile
       </a>
     </p>
 
   </div>
 
+
+</div>
+{% if g.user.liked_stops %}
+<h1 class="mb-4">Stops</h1>
+
+<div class="row">
+
+  {% for stop in g.user.liked_stops %}
+
+  <div class="col-6 col-md-4 col-lg-3">
+    <div class="card mb-3">
+      <img class="card-img-top image-fluid" style="height: 10em" src="{{ stop.image_url }}" alt="{{ stop.name }}">
+      <div class="card-body">
+        <h5 class="card-title">
+          <a href="/stops/{{ stop.id }}">
+            {{ stop.name }}
+          </a>
+        </h5>
+        <p class="card-text">
+          {{ stop.description }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+  {% else %}
+  <h1 class="mb-4">You have no liked Stops</h1>
+  {% endif %}
 </div>
 
 {% endblock %}
