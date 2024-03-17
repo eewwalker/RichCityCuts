@@ -3,10 +3,30 @@
 
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
-
+DEFAULT_IMG_URL = 'https://i.etsystatic.com/16944493/r/il/4f0938/3037341557/il_1588xN.3037341557_8qcl.jpg'
+DEFAULT_STOP_URL = 'https://www.nps.gov/subjects/urban/images/richmond.PNG'
+from mapping import save_map
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
+
+
+class Like(db.Model):
+    """ A through table to connect users and stops """
+    __tablename__ = 'likes'
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        nullable=False,
+        primary_key=True
+    )
+    stop_id = db.Column(
+        db.Integer,
+        db.ForeignKey('stops.id'),
+        nullable=False,
+        primary_key=True
+    )
 
 
 class User(db.Model):
@@ -56,7 +76,7 @@ class User(db.Model):
     image_url = db.Column(
         db.Text,
         nullable=False,
-        default='/static/images/rosie.jpg'
+        default=DEFAULT_IMG_URL
     )
 
     hashed_password = db.Column(
@@ -64,13 +84,25 @@ class User(db.Model):
         nullable=False
     )
 
-    @classmethod
-    def get_full_name(cls):
+    liked_stops = db.relationship(
+        'Stop', secondary='likes', backref='liking_users')
+
+    def get_full_name(self):
         """ Return full name of user """
-        return f'{cls.first_name} {cls.last_name}'
+        return f'{self.first_name} {self.last_name}'
 
     @classmethod
-    def register(cls, username, email, first_name, last_name, description, image_url, password):
+    def register(
+        cls,
+        username,
+        first_name,
+        last_name,
+        description,
+        email,
+        password,
+        image_url='/static/images/rosie.jpg',
+        admin=False
+    ):
         """ Register new user and handle password hashing"""
 
         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
@@ -82,20 +114,22 @@ class User(db.Model):
             last_name=last_name,
             description=description,
             image_url=image_url,
-            hashed_password=hashed_pwd
+            hashed_password=hashed_pwd,
+            admin=admin
         )
 
         db.session.add(user)
         return user
 
     @classmethod
-    def authenicate(cls, username, password):
+    def authenticate(cls, username, password):
         """ Authenicate user to site. Return user instance or False"""
 
         user = User.query.filter_by(username=username).one_or_none()
 
         if user:
-            is_auth = bcrypt.check_password_hash(user.password, password)
+            is_auth = bcrypt.check_password_hash(
+                user.hashed_password, password)
             if is_auth:
                 return user
 
@@ -159,9 +193,12 @@ class Stop(db.Model):
     image_url = db.Column(
         db.Text,
         nullable=False,
-        default="/static/images/richmond.jpeg",
+        default=DEFAULT_STOP_URL
 
     )
+
+    def save_map(self):
+        return save_map(self.id, self.address)
 
     neighborhood = db.relationship("Neighborhood", backref='stops')
 

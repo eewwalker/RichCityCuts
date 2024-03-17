@@ -2,7 +2,7 @@
 
 
 from app import db
-from models import Neighborhood, Stop, db, User
+from models import Neighborhood, Stop, User
 
 
 db.drop_all()
@@ -41,7 +41,8 @@ s1 = Stop(
 
 s2 = Stop(
     name='Marina Bay',
-    description='Beautiful walk along the bay ',
+    description='Beautiful walk along the bay, great for bird watching and views'
+    ' of the bay',
     address='Marina Bay Pkwy & Peninsula Dr, 79 Harbor View Dr',
     hood_code='marina',
     url='https://www.nps.gov/places/richmond-marina-bay-trail.htm',
@@ -49,7 +50,18 @@ s2 = Stop(
     'bc/aa/de/meeker-slough-at-high.jpg?w=2000&h=-1&s=1',
 )
 
-db.session.add_all([s1, s2])
+s3 = Stop(
+    name='Good Hot Sauna',
+    description='Saunas for private rental and a beach for cold plunging at'
+    ' Point San Pablo ',
+    address='1950 Stenmark Dr',
+    hood_code='pablo',
+    url='https://www.kalw.org/arts-culture/2023-02-08/deconstructed-bathhouse'
+    '-good-hot-brings-saunas-to-richmonds-coastline',
+    image_url='https://s.hdnux.com/photos/01/31/31/35/23435084/3/rawImage.jpg'
+)
+
+db.session.add_all([s1, s2, s3])
 db.session.commit()
 
 
@@ -89,9 +101,10 @@ db.session.commit()
 
 
 #######################################
-# cafe maps
+# stop maps
 
-# c1.save_map()
-# c2.save_map()
-#
-# db.session.commit()
+s1.save_map()
+s2.save_map()
+s3.save_map()
+
+db.session.commit()
