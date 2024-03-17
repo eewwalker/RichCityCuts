@@ -41,11 +41,11 @@ class SignUpForm(FlaskForm):
     )
     first_name = StringField(
         'First name',
-        validators=[InputRequired(), Length(30)]
+        validators=[InputRequired(), Length(max=30)]
     )
     last_name = StringField(
         'Last name',
-        validators=[InputRequired(), Length(30)]
+        validators=[InputRequired(), Length(max=30)]
     )
     description = TextAreaField(
         'About yourself(optional)',
@@ -79,3 +79,28 @@ class LoginForm(FlaskForm):
 
 class CSRFProtectionForm(FlaskForm):
     """ CSRF Protection Form """
+
+
+class ProfileEditForm(FlaskForm):
+    """ Form to Edit User Information """
+
+    first_name = StringField(
+        'First name',
+        validators=[Length(max=30)]
+    )
+    last_name = StringField(
+        'Last name',
+        validators=[Length(max=30)]
+    )
+    description = TextAreaField(
+        'About yourself(optional)',
+        validators=[Optional()]
+    )
+    email = StringField(
+        'E-mail',
+        validators=[Email(), Length(max=50)]
+    )
+    image_url = TextAreaField(
+        'Profile Picture URL(optional)',
+        validators=[Optional(), URL()]
+    )

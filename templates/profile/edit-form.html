@@ -6,6 +6,13 @@
 
 <h1 class="mb-4">Edit Profile</h1>
 
-<!-- form goes here -->
-
+<form method="POST">
+  {% include '_form.html' %}
+  <button class="btn btn-outline-primary" type="submit">
+    Update
+  </button>
+  <a class="btn btn-outline-primary" href="/users/{{g.user.id}}">
+    Cancel
+  </a>
+</form>
 {% endblock %}
