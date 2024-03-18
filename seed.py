@@ -11,7 +11,7 @@ db.create_all()
 
 #######################################
 # add neighborhoods
-
+all = Neighborhood(code='all', name='All neighborhoods')
 point = Neighborhood(code='point', name='Point Richmond')
 marina = Neighborhood(code='marina', name='Marina Bay')
 hills = Neighborhood(code='hills', name='Richmond Hills')
@@ -20,7 +20,7 @@ northeast = Neighborhood(code='northeast', name='North and East')
 north = Neighborhood(code='north', name='North Richmond')
 annex = Neighborhood(code='annex', name='Richmond Annex')
 
-db.session.add_all([point, marina, hills, pablo, northeast, north, annex])
+db.session.add_all([all, point, marina, hills, pablo, northeast, north, annex])
 db.session.commit()
 
 

@@ -2,7 +2,9 @@
 
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField, SelectField, StringField, PasswordField
+from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired, Email, Optional, URL, Length
+from models import Neighborhood
 
 
 class StopAddEditForm(FlaskForm):
@@ -104,3 +106,14 @@ class ProfileEditForm(FlaskForm):
         'Profile Picture URL(optional)',
         validators=[Optional(), URL()]
     )
+
+
+def choice_query():
+    return Neighborhood.query
+
+
+class FilterForm(FlaskForm):
+    """ Form to filter by Neighborhood"""
+
+    opts = QuerySelectField(query_factory=choice_query,
+                            allow_blank=True, get_label='name')

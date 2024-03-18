@@ -248,7 +248,7 @@ class StopAdminViewsTestCase(TestCase):
         stop = Stop(**STOP_DATA)
         db.session.add(stop)
 
-        user = User.register(**TEST_USER_DATA)
+        user = User.register(**ADMIN_USER_DATA)
         db.session.add(user)
 
         db.session.commit()

@@ -1,4 +1,4 @@
-"""Flask App for Flask Cafe."""
+"""Flask App for RICH CITY STOPS."""
 
 import os
 
@@ -11,7 +11,7 @@ from werkzeug.exceptions import Unauthorized
 from models import db, connect_db, Neighborhood, Stop, User, DEFAULT_IMG_URL, \
     DEFAULT_STOP_URL
 from forms import StopAddEditForm, CSRFProtectionForm, SignUpForm, LoginForm, \
-    ProfileEditForm
+    ProfileEditForm, FilterForm
 
 
 app = Flask(__name__)
@@ -87,7 +87,7 @@ def homepage():
 # spots
 
 
-@app.get('/stops')
+@app.route('/stops', methods=['GET', 'POST'])
 def stops_list():
     """Return list of all stops."""
 
@@ -95,11 +95,35 @@ def stops_list():
         flash('Please log in or Sign up!', 'danger')
         return redirect(url_for('homepage'))
 
+    form = FilterForm()
+    if form.validate_on_submit():
+        hood_name = form.opts.data.name
+
+        if hood_name == 'All neighborhoods':
+            stops = Stop.query.order_by('name').all()
+
+            return render_template(
+                'stop/list.html',
+                stops=stops,
+                form=form
+            )
+
+        filtered_hood = Neighborhood.query.filter_by(name=hood_name).first()
+        hood_code = filtered_hood.code
+        stops = Stop.query.filter_by(hood_code=hood_code).all()
+
+        return render_template(
+            'stop/list.html',
+            stops=stops,
+            form=form
+        )
+
     stops = Stop.query.order_by('name').all()
 
     return render_template(
         'stop/list.html',
         stops=stops,
+        form=form
     )
 
 
@@ -200,7 +224,8 @@ def delete_stop(stop_id):
 
     stop = Stop.query.get_or_404(stop_id)
 
-    g.user.liked_stops.remove(stop)
+    if stop in g.user.liked_stops:
+        g.user.liked_stops.remove(stop)
     db.session.delete(stop)
     db.session.commit()
 
