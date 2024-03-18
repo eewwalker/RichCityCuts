@@ -96,6 +96,7 @@ def stops_list():
         return redirect(url_for('homepage'))
 
     form = FilterForm()
+
     if form.validate_on_submit():
         hood_name = form.opts.data.name
 
