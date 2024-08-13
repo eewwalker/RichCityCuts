@@ -1,11 +1,12 @@
 ### RICH CITY STOPS 
 An app for managing stops and users, allowing users to favorite particular stops and view their locations on a map.
-* Admin can add/edit/delete/like
-* User can like
-* Filter stops by neighborhood
-* Authentication
-* MapQuest API integration
-* Custom 404
+
+* Engineered a RESTful API and developed the backend using Python and Flask, managing many-to-many relationships with SQLAlchemy.
+* Admins can add/edit/delete/like. Users can like
+* Implemented a filter feature, for users to filter their stops by neighborhood, enhancing user experience and navigation.
+* Created the frontend using Flask templates, implementing user-friendly interfaces for viewing, adding, and editing stops.
+* Integrated the MapQuest API to display locations on a map, providing visual representation of favorite stops.
+* Authentication, Custom 404
 ### Built With
 [![My Skills](https://skillicons.dev/icons?i=py,flask,js,html,css)](https://skillicons.dev)
 ---
